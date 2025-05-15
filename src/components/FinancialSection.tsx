@@ -5,6 +5,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
 import { FileText, Building, PiggyBank, BarChart3, Shield, Award, AlertTriangle } from "lucide-react";
+import DownloadButton from "@/components/navigation/DownloadButton";
 
 const FinancialSection = () => {
   const [activeTab, setActiveTab] = useState("structure");
@@ -25,30 +26,51 @@ const FinancialSection = () => {
     { name: 'Subventions', value: 95000 },
   ];
 
-  // Mise à jour des données de revenus selon le nouveau plan de trésorerie
-  const revenueData = [
-    { year: 'Année 1', hebergement: 232344, pension: 38400, activites: 11760, evenements: 48500, annexes: 0 },
-    { year: 'Année 2', hebergement: 243961, pension: 40320, activites: 12348, evenements: 50925, annexes: 0 },
-    { year: 'Année 3', hebergement: 256159, pension: 42336, activites: 12965, evenements: 53471, annexes: 0 },
+  const financementInitial = [
+    { name: 'Apport personnel', value: 30000 },
+    { name: 'Crédit-bail', value: 850000 },
+    { name: 'Financement à terme', value: 250000 },
+    { name: 'Prêt bancaire', value: 500000 },
+    { name: 'Subventions', value: 95000 },
   ];
 
-  const cashFlowData = [
-    { year: '2025', value: 11540 },
-    { year: '2026', value: 44696 },
-    { year: '2027', value: 91352 },
-    { year: '2028', value: 152184 },
-    { year: '2029', value: 227899 },
-    { year: '2030', value: 306739 },
-    { year: '2031', value: 385537 },
-    { year: '2032', value: 470723 },
-    { year: '2033', value: 559129 },
-    { year: '2034', value: 650788 },
-    { year: '2035', value: 745732 },
-    { year: '2036', value: 868993 },
-    { year: '2037', value: 995606 },
-    { year: '2038', value: 1125603 },
-    { year: '2039', value: 1259019 },
-    { year: '2040', value: 1395887 },
+  // Harmonisation avec MarketSection
+  const caMarket = [290660, 346900, 400500];
+  const chargesFixes = 54593; // inchangé
+  const annuite = 140000;
+  const impotsEntretien = 20000;
+  const cafData = [
+    { an: 'Année 1', caf: caMarket[0] - chargesFixes - annuite - impotsEntretien, rn: caMarket[0] - chargesFixes - annuite - impotsEntretien },
+    { an: 'Année 2', caf: caMarket[1] - chargesFixes - annuite - impotsEntretien, rn: caMarket[1] - chargesFixes - annuite - impotsEntretien },
+    { an: 'Année 3', caf: caMarket[2] - chargesFixes - annuite - impotsEntretien, rn: caMarket[2] - chargesFixes - annuite - impotsEntretien },
+  ];
+
+  // Répartition CA par activité (alignée sur MarketSection)
+  const caRepartition = [
+    {
+      an: 'Année 1',
+      hebergement: 195000,
+      pensions: 38400,
+      equitation: 11760,
+      evenementiel: 34000,
+      annexes: 11500,
+    },
+    {
+      an: 'Année 2',
+      hebergement: 232000,
+      pensions: 43200,
+      equitation: 14400,
+      evenementiel: 42500,
+      annexes: 14800,
+    },
+    {
+      an: 'Année 3',
+      hebergement: 267000,
+      pensions: 48000,
+      equitation: 16800,
+      evenementiel: 52000,
+      annexes: 16700,
+    },
   ];
 
   const COLORS = ['#738c4a', '#596e3b', '#485833', '#3e492f', '#aec185', '#8faa5e', '#dcc294', '#cfa971'];
@@ -377,7 +399,7 @@ const FinancialSection = () => {
                   <div className="h-[350px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart
-                        data={cashFlowData}
+                        data={cafData.map((d, i) => ({ year: `Année ${i + 1}`, value: d.caf }))}
                         margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" />
@@ -420,11 +442,84 @@ const FinancialSection = () => {
                 <h3 className="text-2xl font-semibold text-olive-700 mb-6">Prévisions financières</h3>
                 
                 <div className="mb-10">
+                  {/* Bloc synthétique marché et hypothèses */}
+                  <div className="bg-cream-50 rounded-lg p-6 mb-8">
+                    <h4 className="text-lg font-semibold text-olive-800 mb-4">Projections commerciales et financières</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                      <div>
+                        <h5 className="font-medium text-olive-700 mb-2">Segment hébergement touristique</h5>
+                        <ul className="text-sm text-olive-700 space-y-1">
+                          <li>Marché régional gîtes haut de gamme : <b>185 M€ / an</b></li>
+                          <li>Part de marché captable (année 3) : <b>0,16%</b></li>
+                          <li>Potentiel annuel : <b>296 000 €</b></li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h5 className="font-medium text-olive-700 mb-2">Segment activités équestres</h5>
+                        <ul className="text-sm text-olive-700 space-y-1">
+                          <li>Marché régional tourisme équestre : <b>90 M€ / an</b></li>
+                          <li>Part de marché captable (année 3) : <b>0,06%</b></li>
+                          <li>Potentiel annuel : <b>54 000 €</b></li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h5 className="font-medium text-olive-700 mb-2">Segment événementiel</h5>
+                        <ul className="text-sm text-olive-700 space-y-1">
+                          <li>Marché réceptions & séminaires ruraux : <b>42 M€ / an</b></li>
+                          <li>Part de marché captable (année 3) : <b>0,12%</b></li>
+                          <li>Potentiel annuel : <b>50 400 €</b></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div className="overflow-x-auto mb-4">
+                      <h5 className="font-medium text-olive-700 mb-2">Évolution prévisionnelle du taux d'occupation</h5>
+                      <Table className="text-xs">
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Période</TableHead>
+                            <TableHead>Année 1</TableHead>
+                            <TableHead>Année 2</TableHead>
+                            <TableHead>Année 3</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell className="font-medium">Haute saison (juil-août)</TableCell>
+                            <TableCell>65%</TableCell>
+                            <TableCell>75%</TableCell>
+                            <TableCell>85%</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">Moyenne saison (avr-juin/sept-oct)</TableCell>
+                            <TableCell>45%</TableCell>
+                            <TableCell>58%</TableCell>
+                            <TableCell>68%</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium">Basse saison (novembre-mars)</TableCell>
+                            <TableCell>25%</TableCell>
+                            <TableCell>30%</TableCell>
+                            <TableCell>38%</TableCell>
+                          </TableRow>
+                          <TableRow className="bg-cream-100">
+                            <TableCell className="font-semibold">Moyenne annuelle</TableCell>
+                            <TableCell className="font-semibold">42%</TableCell>
+                            <TableCell className="font-semibold">51%</TableCell>
+                            <TableCell className="font-semibold">59%</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </div>
+                    <div className="text-xs text-olive-700">
+                      <b>Note :</b> Les hypothèses de taux d’occupation et de potentiel annuel sont strictement cohérentes avec les tableaux de revenus détaillés et les seuils de rentabilité ci-dessous.
+                    </div>
+                  </div>
+                  {/* ...suite existante... */}
                   <h4 className="text-lg font-medium text-olive-800 mb-4">Répartition du chiffre d'affaires</h4>
                   <div className="h-[350px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart
-                        data={revenueData}
+                        data={cafData.map((d, i) => ({ year: `Année ${i + 1}`, value: d.caf }))}
                         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" />
@@ -432,11 +527,7 @@ const FinancialSection = () => {
                         <YAxis />
                         <Tooltip formatter={(value) => formatEuro(value)} />
                         <Legend />
-                        <Bar dataKey="hebergement" name="Hébergements" stackId="a" fill="#738c4a" />
-                        <Bar dataKey="pension" name="Pensions équestres" stackId="a" fill="#8faa5e" />
-                        <Bar dataKey="activites" name="Activités équestres" stackId="a" fill="#aec185" />
-                        <Bar dataKey="evenements" name="Événements" stackId="a" fill="#cfa971" />
-                        <Bar dataKey="annexes" name="Services annexes" stackId="a" fill="#dcc294" />
+                        <Bar dataKey="value" name="Chiffre d'affaires" fill="#738c4a" />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -454,41 +545,25 @@ const FinancialSection = () => {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          <TableRow>
-                            <TableCell className="font-medium">Hébergements (gîtes et chambres)</TableCell>
-                            <TableCell className="text-right">232 344 € (70,2%)</TableCell>
-                            <TableCell className="text-right">243 961 € (70,2%)</TableCell>
-                            <TableCell className="text-right">256 159 € (70,2%)</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="font-medium">Pensions équestres</TableCell>
-                            <TableCell className="text-right">38 400 € (11,6%)</TableCell>
-                            <TableCell className="text-right">40 320 € (11,6%)</TableCell>
-                            <TableCell className="text-right">42 336 € (11,6%)</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="font-medium">Activités équestres</TableCell>
-                            <TableCell className="text-right">11 760 € (3,6%)</TableCell>
-                            <TableCell className="text-right">12 348 € (3,6%)</TableCell>
-                            <TableCell className="text-right">12 965 € (3,6%)</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="font-medium">Événements</TableCell>
-                            <TableCell className="text-right">48 500 € (14,6%)</TableCell>
-                            <TableCell className="text-right">50 925 € (14,6%)</TableCell>
-                            <TableCell className="text-right">53 471 € (14,6%)</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="font-medium">Annexes de services</TableCell>
-                            <TableCell className="text-right">0 € (0%)</TableCell>
-                            <TableCell className="text-right">0 € (0%)</TableCell>
-                            <TableCell className="text-right">0 € (0%)</TableCell>
-                          </TableRow>
+                          {['hebergement', 'pensions', 'equitation', 'evenementiel', 'annexes'].map((key, idx) => (
+                            <TableRow key={key}>
+                              <TableCell className="font-medium">
+                                {key === 'hebergement' ? 'Hébergements (gîtes et chambres)' :
+                                 key === 'pensions' ? 'Pensions équestres' :
+                                 key === 'equitation' ? 'Activités équestres' :
+                                 key === 'evenementiel' ? 'Événements (mariages, séminaires)' :
+                                 'Annexes de services'}
+                              </TableCell>
+                              <TableCell className="text-right">{formatEuro(caRepartition[0][key])} ({((caRepartition[0][key]/caMarket[0])*100).toFixed(1)}%)</TableCell>
+                              <TableCell className="text-right">{formatEuro(caRepartition[1][key])} ({((caRepartition[1][key]/caMarket[1])*100).toFixed(1)}%)</TableCell>
+                              <TableCell className="text-right">{formatEuro(caRepartition[2][key])} ({((caRepartition[2][key]/caMarket[2])*100).toFixed(1)}%)</TableCell>
+                            </TableRow>
+                          ))}
                           <TableRow className="bg-cream-50">
                             <TableCell className="font-bold">TOTAL</TableCell>
-                            <TableCell className="text-right font-bold">331 004 €</TableCell>
-                            <TableCell className="text-right font-bold">347 554 €</TableCell>
-                            <TableCell className="text-right font-bold">364 932 €</TableCell>
+                            <TableCell className="text-right font-bold">{formatEuro(caMarket[0])}</TableCell>
+                            <TableCell className="text-right font-bold">{formatEuro(caMarket[1])}</TableCell>
+                            <TableCell className="text-right font-bold">{formatEuro(caMarket[2])}</TableCell>
                           </TableRow>
                         </TableBody>
                       </Table>
@@ -608,6 +683,41 @@ const FinancialSection = () => {
                     </Card>
                   </div>
                 </div>
+                <Card className="border-olive-200">
+                  <CardContent className="p-6">
+                    <h4 className="font-semibold text-lg text-olive-800 mb-2">4. Rentabilité nette du projet</h4>
+                    <p className="text-olive-700 mb-2 text-sm">Mesure si le projet vaut le coup économiquement.</p>
+                    <div className="flex items-center gap-4 mb-2">
+                      <span className="text-olive-700 font-bold text-2xl">{((caMarket[2]-chargesFixes-annuite-impotsEntretien)/1692960*100).toFixed(1)}%</span>
+                      <span className="text-olive-600 text-sm">(Année 3)</span>
+                    </div>
+                    <BarChart width={220} height={80} data={[{ name: 'Rentabilité', value: (caMarket[2]-chargesFixes-annuite-impotsEntretien)/1692960 }]}>
+                      <XAxis dataKey="name" hide />
+                      <YAxis hide />
+                      <Tooltip formatter={(v) => (typeof v === 'number' ? (v * 100).toFixed(1) + '%' : '')} content={({ active, payload }) => active && payload && payload.length && typeof payload[0]?.value === 'number' ? (
+                        <div className="bg-white p-2 rounded shadow text-xs text-olive-800">
+                          <div><b>Rentabilité nette</b> : {(payload[0].value * 100).toFixed(1)}%</div>
+                          <div>Résultat net / Total projet</div>
+                        </div>
+                      ) : null} />
+                      <Legend verticalAlign="bottom" height={24} formatter={() => 'Rentabilité nette du projet'} />
+                      <Bar dataKey="value" fill="#cfa971" label={{ position: 'top', formatter: (v) => (v * 100).toFixed(1) + '%' }} />
+                    </BarChart>
+                    <div className="mt-2 bg-cream-50 rounded p-3 text-xs text-olive-800">
+                      <b>Détail du calcul :</b>
+                      <ul className="list-disc list-inside mt-1">
+                        <li>Revenus locatifs (CA Année 3) : {formatEuro(caMarket[2])}</li>
+                        <li>- Charges : {formatEuro(chargesFixes)}</li>
+                        <li>- Annuités : {formatEuro(annuite)}</li>
+                        <li>- Impôts/entretien : {formatEuro(impotsEntretien)}</li>
+                        <li>Total projet : {formatEuro(1692960)}</li>
+                      </ul>
+                      <div className="mt-1">Formule appliquée : <span className="font-mono">(Revenus - charges - impôts) / Total projet</span></div>
+                      <div className="mt-1">Ici : <span className="font-mono">({formatEuro(caMarket[2])} - {formatEuro(chargesFixes)} - {formatEuro(annuite)} - {formatEuro(impotsEntretien)}) / {formatEuro(1692960)} = {((caMarket[2]-chargesFixes-annuite-impotsEntretien)/1692960*100).toFixed(1)}%</span></div>
+                      <div className="mt-1"><span className="inline-block px-2 py-1 rounded bg-green-100 text-green-800 font-semibold">Bon score : 4-5 % = acceptable, 6-8 % = très bien</span></div>
+                    </div>
+                  </CardContent>
+                </Card>
               </CardContent>
             </Card>
           </TabsContent>
@@ -880,13 +990,12 @@ const FinancialSection = () => {
           <TabsContent value="risks" className="animate-fade-in opacity-0">
             <Card>
               <CardContent className="pt-6">
-                <h3 className="text-2xl font-semibold text-olive-700 mb-6">Maîtrise des risques financiers</h3>
-                
+                <h3 className="text-2xl font-semibold text-olive-700 mb-6">Maîtrise des risques</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                   <div>
                     <h4 className="text-lg font-medium text-olive-800 mb-4 flex items-center gap-2">
                       <AlertTriangle size={18} className="text-olive-600" />
-                      Stratégies d'atténuation des risques
+                      Diversification et flexibilité
                     </h4>
                     <div className="space-y-4">
                       <Card className="border-olive-200">
@@ -900,23 +1009,24 @@ const FinancialSection = () => {
                               <PieChart>
                                 <Pie
                                   data={[
-                                    { name: 'Hébergement', value: 70 },
-                                    { name: 'Activités équestres', value: 15 },
-                                    { name: 'Événementiel', value: 15 },
-                                    { name: 'Annexes', value: 0 },
+                                    { name: 'Hébergement', value: caRepartition[2].hebergement },
+                                    { name: 'Pensions', value: caRepartition[2].pensions },
+                                    { name: 'Activités équestres', value: caRepartition[2].equitation },
+                                    { name: 'Événementiel', value: caRepartition[2].evenementiel },
+                                    { name: 'Annexes', value: caRepartition[2].annexes },
                                   ]}
                                   cx="50%"
                                   cy="50%"
-                                  outerRadius={60}
+                                  outerRadius={80}
                                   fill="#8884d8"
                                   dataKey="value"
                                   label
                                 >
-                                  {investmentData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                  {COLORS.map((color, i) => (
+                                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
                                   ))}
                                 </Pie>
-                                <Tooltip />
+                                <Tooltip formatter={formatEuro} />
                               </PieChart>
                             </ResponsiveContainer>
                           </div>
@@ -938,7 +1048,7 @@ const FinancialSection = () => {
                           <h5 className="font-medium mb-2">Sécurisation du financement</h5>
                           <ul className="list-disc list-inside text-sm text-olive-700 space-y-1">
                             <li>Crédit-bail immobilier (moins risqué qu'un prêt classique)</li>
-                            <li>Échéancier adapté à la mont��e en puissance du projet</li>
+                            <li>Échéancier adapté à la montée en puissance du projet</li>
                           </ul>
                         </CardContent>
                       </Card>
@@ -987,6 +1097,311 @@ const FinancialSection = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Section KPI/SIG - Résultats réels et graphiques */}
+        <div className="mt-20">
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-2xl font-bold text-olive-800 flex items-center gap-2">
+              <BarChart3 size={24} className="text-olive-600" />
+              Indicateurs Clés de Performance (KPI/SIG)
+            </h3>
+            <DownloadButton onDownload={() => {}} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            {/* 1. Capacité d’Autofinancement (CAF) */}
+            <Card className="border-olive-200">
+              <CardContent className="p-6">
+                <h4 className="font-semibold text-lg text-olive-800 mb-2">1. Capacité d’Autofinancement (CAF)</h4>
+                <p className="text-olive-700 mb-2 text-sm">Montre combien l’activité génère de cash chaque année pour rembourser le prêt, investir ou se rémunérer.</p>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-olive-700 font-bold text-2xl">{formatEuro(cafData[0].caf)} / {formatEuro(cafData[1].caf)} / {formatEuro(cafData[2].caf)}</span>
+                  <span className="text-olive-600 text-sm">(Années 1/2/3)</span>
+                </div>
+                <BarChart width={260} height={80} data={cafData.map((d, i) => ({ name: d.an, value: d.caf }))}>
+                  <XAxis dataKey="name" />
+                  <YAxis hide />
+                  <Tooltip formatter={formatEuro} content={({ active, payload }) => active && payload && payload.length && typeof payload[0]?.value === 'number' ? (
+                    <div className="bg-white p-2 rounded shadow text-xs text-olive-800">
+                      <div><b>{payload[0]?.payload?.name}</b> : {formatEuro(payload[0]?.value)}</div>
+                      <div>Capacité d’autofinancement générée par l’activité</div>
+                    </div>
+                  ) : null} />
+                  <Legend verticalAlign="bottom" height={24} formatter={() => 'CAF (Capacité d’autofinancement)'} />
+                  <Bar dataKey="value" fill="#738c4a" label={{ position: 'top', formatter: formatEuro }} />
+                </BarChart>
+                <div className="mt-2 bg-cream-50 rounded p-3 text-xs text-olive-800">
+                  <b>Détail du calcul :</b>
+                  <ul className="list-disc list-inside mt-1">
+                    <li>Résultat net : {formatEuro(cafData[0].rn)} / {formatEuro(cafData[1].rn)} / {formatEuro(cafData[2].rn)}</li>
+                    <li>+ Amortissements : {formatEuro(0)} (hypothèse simplifiée)</li>
+                    <li>+ Provisions : {formatEuro(0)}</li>
+                    <li>- Reprises : {formatEuro(0)}</li>
+                    <li>+ Intérêts d’emprunt : {formatEuro(0)}</li>
+                  </ul>
+                  <div className="mt-1">Formule appliquée : <span className="font-mono">CAF = Résultat net + amortissements + provisions – reprises + intérêts d’emprunt</span></div>
+                  <div className="mt-1">Ici : <span className="font-mono">{formatEuro(cafData[0].rn)} / {formatEuro(cafData[1].rn)} / {formatEuro(cafData[2].rn)}</span></div>
+                  <div className="mt-1"><span className="inline-block px-2 py-1 rounded bg-green-100 text-green-800 font-semibold">Niveau attendu : supérieur à l’annuité de remboursement du prêt (~140 000 €)</span></div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* 2. Taux de couverture des annuités */}
+            <Card className="border-olive-200">
+              <CardContent className="p-6">
+                <h4 className="font-semibold text-lg text-olive-800 mb-2">2. Taux de couverture des annuités</h4>
+                <p className="text-olive-700 mb-2 text-sm">Indique la capacité à rembourser les emprunts sans difficulté.</p>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-olive-700 font-bold text-2xl">
+                    {(cafData[0].caf/annuite).toFixed(2)} / {(cafData[1].caf/annuite).toFixed(2)} / {(cafData[2].caf/annuite).toFixed(2)}
+                  </span>
+                  <span className="text-olive-600 text-sm">(Années 1/2/3)</span>
+                </div>
+                <BarChart width={260} height={80} data={cafData.map((d) => ({ name: d.an, value: d.caf/annuite }))}>
+                  <XAxis dataKey="name" />
+                  <YAxis hide />
+                  <Tooltip formatter={(v) => (typeof v === 'number' ? (v * 100).toFixed(1) + '%' : '')} content={({ active, payload }) => active && payload && payload.length && typeof payload[0]?.value === 'number' ? (
+                    <div className="bg-white p-2 rounded shadow text-xs text-olive-800">
+                      <div><b>Taux de couverture</b> : {(payload[0]?.value * 100).toFixed(1)}%</div>
+                      <div>CAF / Annuité de remboursement</div>
+                    </div>
+                  ) : null} />
+                  <Legend verticalAlign="bottom" height={24} formatter={() => 'Taux de couverture des annuités'} />
+                  <Bar dataKey="value" fill="#8faa5e" label={{ position: 'top', formatter: (v) => (v * 100).toFixed(1) + '%' }} />
+                </BarChart>
+                <div className="mt-2 bg-cream-50 rounded p-3 text-xs text-olive-800">
+                  <b>Détail du calcul :</b>
+                  <ul className="list-disc list-inside mt-1">
+                    <li>CAF : {formatEuro(cafData[0].caf)} / {formatEuro(cafData[1].caf)} / {formatEuro(cafData[2].caf)}</li>
+                    <li>Annuité de remboursement : {formatEuro(annuite)}</li>
+                  </ul>
+                  <div className="mt-1">Formule appliquée : <span className="font-mono">Taux = CAF / Annuité</span></div>
+                  <div className="mt-1">Ici : <span className="font-mono">{(cafData[0].caf/annuite).toFixed(2)} / {(cafData[1].caf/annuite).toFixed(2)} / {(cafData[2].caf/annuite).toFixed(2)}</span></div>
+                  <div className="mt-1"><span className="inline-block px-2 py-1 rounded bg-yellow-100 text-yellow-800 font-semibold">Bon score : &gt; 1,2 (idéalement 1,5)</span></div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* 3. Apport personnel d’endettement */}
+            <Card className="border-olive-200">
+              <CardContent className="p-6">
+                <h4 className="font-semibold text-lg text-olive-800 mb-2">3. Apport personnel d’endettement</h4>
+                <p className="text-olive-700 mb-2 text-sm">Un bon apport rassure le banquier et montre l’implication du porteur.</p>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-olive-700 font-bold text-2xl">{((30000/1692960)*100).toFixed(1)}%</span>
+                  <span className="text-olive-600 text-sm">(30 000 € / 1 692 960 €)</span>
+                </div>
+                <PieChart width={120} height={120}>
+                  <Pie data={[{ name: 'Apport', value: 30000 }, { name: 'Autres', value: 1662960 }]} dataKey="value" cx="50%" cy="50%" outerRadius={50} fill="#aec185" label />
+                  <Cell fill="#738c4a" />
+                  <Cell fill="#e5e5e5" />
+                </PieChart>
+                <div className="mt-2 bg-cream-50 rounded p-3 text-xs text-olive-800">
+                  <b>Détail du calcul :</b>
+                  <ul className="list-disc list-inside mt-1">
+                    <li>Apport personnel : {formatEuro(30000)}</li>
+                    <li>Montant total du projet : {formatEuro(1692960)}</li>
+                  </ul>
+                  <div className="mt-1">Formule appliquée : <span className="font-mono">Apport / Total du projet</span></div>
+                  <div className="mt-1">Ici : <span className="font-mono">30 000 € / 1 692 960 € = {((30000/1692960)*100).toFixed(1)}%</span></div>
+                  <div className="mt-1"><span className="inline-block px-2 py-1 rounded bg-yellow-100 text-yellow-800 font-semibold">Bon score : 10 à 30 %</span></div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* 4. Rentabilité nette du projet */}
+            <Card className="border-olive-200">
+              <CardContent className="p-6">
+                <h4 className="font-semibold text-lg text-olive-800 mb-2">4. Rentabilité nette du projet</h4>
+                <p className="text-olive-700 mb-2 text-sm">Mesure si le projet vaut le coup économiquement.</p>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-olive-700 font-bold text-2xl">{((caMarket[2]-chargesFixes-annuite-impotsEntretien)/1692960*100).toFixed(1)}%</span>
+                  <span className="text-olive-600 text-sm">(Année 3)</span>
+                </div>
+                <BarChart width={220} height={80} data={[{ name: 'Rentabilité', value: (caMarket[2]-chargesFixes-annuite-impotsEntretien)/1692960 }]}>
+                  <XAxis dataKey="name" hide />
+                  <YAxis hide />
+                  <Tooltip formatter={(v) => (typeof v === 'number' ? (v * 100).toFixed(1) + '%' : '')} content={({ active, payload }) => active && payload && payload.length && typeof payload[0]?.value === 'number' ? (
+                    <div className="bg-white p-2 rounded shadow text-xs text-olive-800">
+                      <div><b>Rentabilité nette</b> : {(payload[0]?.value * 100).toFixed(1)}%</div>
+                      <div>Résultat net / Total projet</div>
+                    </div>
+                  ) : null} />
+                  <Legend verticalAlign="bottom" height={24} formatter={() => 'Rentabilité nette du projet'} />
+                  <Bar dataKey="value" fill="#cfa971" label={{ position: 'top', formatter: (v) => (v * 100).toFixed(1) + '%' }} />
+                </BarChart>
+                <div className="mt-2 bg-cream-50 rounded p-3 text-xs text-olive-800">
+                  <b>Détail du calcul :</b>
+                  <ul className="list-disc list-inside mt-1">
+                    <li>Revenus locatifs (CA Année 3) : {formatEuro(caMarket[2])}</li>
+                    <li>- Charges : {formatEuro(chargesFixes)}</li>
+                    <li>- Annuités : {formatEuro(annuite)}</li>
+                    <li>- Impôts/entretien : {formatEuro(impotsEntretien)}</li>
+                    <li>Total projet : {formatEuro(1692960)}</li>
+                  </ul>
+                  <div className="mt-1">Formule appliquée : <span className="font-mono">(Revenus - charges - impôts) / Total projet</span></div>
+                  <div className="mt-1">Ici : <span className="font-mono">({formatEuro(caMarket[2])} - {formatEuro(chargesFixes)} - {formatEuro(annuite)} - {formatEuro(impotsEntretien)}) / {formatEuro(1692960)} = {((caMarket[2]-chargesFixes-annuite-impotsEntretien)/1692960*100).toFixed(1)}%</span></div>
+                  <div className="mt-1"><span className="inline-block px-2 py-1 rounded bg-green-100 text-green-800 font-semibold">Bon score : 4-5 % = acceptable, 6-8 % = très bien</span></div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* 5. Trésorerie nette après prêt */}
+            <Card className="border-olive-200">
+              <CardContent className="p-6">
+                <h4 className="font-semibold text-lg text-olive-800 mb-2">5. Trésorerie nette après prêt</h4>
+                <p className="text-olive-700 mb-2 text-sm">Le matelas de sécurité pour ne pas suffoquer dès la première échéance.</p>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-olive-700 font-bold text-2xl">{formatEuro(cafData[2].caf-annuite)}</span>
+                  <span className="text-olive-600 text-sm">(CAF - Annuité)</span>
+                </div>
+                <BarChart width={220} height={80} data={[{ name: 'Trésorerie nette', value: cafData[2].caf-annuite }]}><XAxis dataKey="name" hide /><YAxis hide /><Tooltip formatter={formatEuro} /><Bar dataKey="value" fill="#596e3b" /></BarChart>
+                <p className="text-olive-700 text-sm mt-2"><span className="font-medium">Formule :</span> CAF – Annuité</p>
+                <p className="text-olive-700 text-sm"><span className="font-medium">Bon score :</span> Rester en positif chaque mois.</p>
+                <div className="mt-2 bg-cream-50 rounded p-3 text-xs text-olive-800">
+                  <b>Détail du calcul :</b>
+                  <ul className="list-disc list-inside mt-1">
+                    <li>CAF : {formatEuro(cafData[2].caf)}</li>
+                    <li>Annuité de remboursement : {formatEuro(annuite)}</li>
+                  </ul>
+                  <div className="mt-1">Formule appliquée : <span className="font-mono">CAF - Annuité</span></div>
+                  <div className="mt-1">Ici : <span className="font-mono">{formatEuro(cafData[2].caf)} - {formatEuro(annuite)} = {formatEuro(cafData[2].caf-annuite)}</span></div>
+                  <div className="mt-1"><span className="inline-block px-2 py-1 rounded bg-yellow-100 text-yellow-800 font-semibold">Bon score : Rester en positif chaque mois</span></div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* 6. Fonds de Roulement (FR) */}
+            <Card className="border-olive-200">
+              <CardContent className="p-6">
+                <h4 className="font-semibold text-lg text-olive-800 mb-2">6. Fonds de Roulement (FR)</h4>
+                <p className="text-olive-700 mb-2 text-sm">Montre si les ressources longues couvrent les besoins longs et alimentent le cycle court terme.</p>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-olive-700 font-bold text-2xl">{formatEuro(30000+850000+250000+500000+95000-1692960)}</span>
+                  <span className="text-olive-600 text-sm">(Capitaux permanents - Actifs immobilisés)</span>
+                </div>
+                <BarChart width={220} height={80} data={[{ name: 'FR', value: 30000+850000+250000+500000+95000-1692960 }]}><XAxis dataKey="name" hide /><YAxis hide /><Tooltip formatter={formatEuro} /><Bar dataKey="value" fill="#485833" /></BarChart>
+                <p className="text-olive-700 text-sm mt-2"><span className="font-medium">Formule :</span> Capitaux permanents – Actifs immobilisés</p>
+                <p className="text-olive-700 text-sm"><span className="font-medium">Bon score :</span> Positif</p>
+                <div className="mt-2 bg-cream-50 rounded p-3 text-xs text-olive-800">
+                  <b>Détail du calcul :</b>
+                  <ul className="list-disc list-inside mt-1">
+                    <li>Capitaux permanents : {formatEuro(30000+850000+250000+500000+95000)}</li>
+                    <li>Actifs immobilisés : {formatEuro(1692960)}</li>
+                  </ul>
+                  <div className="mt-1">Formule appliquée : <span className="font-mono">FR = Capitaux permanents – Actifs immobilisés</span></div>
+                  <div className="mt-1">Ici : <span className="font-mono">(30 000 € + 850 000 € + 250 000 € + 500 000 € + 95 000 €) – 1 692 960 € = {formatEuro(30000+850000+250000+500000+95000-1692960)}</span></div>
+                  <div className="mt-1"><span className="inline-block px-2 py-1 rounded bg-green-100 text-green-800 font-semibold">Bon score : positif</span></div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* 7. Besoin en Fonds de Roulement (BFR) */}
+            <Card className="border-olive-200">
+              <CardContent className="p-6">
+                <h4 className="font-semibold text-lg text-olive-800 mb-2">7. Besoin en Fonds de Roulement (BFR)</h4>
+                <p className="text-olive-700 mb-2 text-sm">Reflète la trésorerie à mobiliser pour le quotidien (encaissements différés, charges avancées...)</p>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-olive-700 font-bold text-2xl">0 €</span>
+                  <span className="text-olive-600 text-sm">(hypothèse gîte, clients paient à l’avance)</span>
+                </div>
+                <BarChart width={220} height={80} data={[{ name: 'BFR', value: 0 }]}><XAxis dataKey="name" hide /><YAxis hide /><Tooltip formatter={formatEuro} /><Bar dataKey="value" fill="#aec185" /></BarChart>
+                <p className="text-olive-700 text-sm mt-2"><span className="font-medium">Formule :</span> Stocks + Créances clients – Dettes fournisseurs</p>
+                <p className="text-olive-700 text-sm"><span className="font-medium">Bon score :</span> Faible ou négatif = excellent</p>
+                <div className="mt-2 bg-cream-50 rounded p-3 text-xs text-olive-800">
+                  <b>Détail du calcul :</b>
+                  <ul className="list-disc list-inside mt-1">
+                    <li>Stocks : {formatEuro(0)}</li>
+                    <li>Créances clients : {formatEuro(0)}</li>
+                    <li>Dettes fournisseurs : {formatEuro(0)}</li>
+                  </ul>
+                  <div className="mt-1">Formule appliquée : <span className="font-mono">BFR = Stocks + Créances clients – Dettes fournisseurs</span></div>
+                  <div className="mt-1">Ici : <span className="font-mono">0 € + 0 € – 0 € = 0 €</span></div>
+                  <div className="mt-1"><span className="inline-block px-2 py-1 rounded bg-green-100 text-green-800 font-semibold">Bon score : faible ou négatif = excellent</span></div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          {/* Tableaux financiers détaillés */}
+          <div className="bg-cream-50 rounded-lg p-6 mt-8">
+            <h4 className="font-semibold text-lg text-olive-800 mb-4">📊 Plan de trésorerie sur 12 mois</h4>
+            <Table className="mb-8">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Mois</TableHead>
+                  <TableHead>Entrées (€)</TableHead>
+                  <TableHead>Sorties (€)</TableHead>
+                  <TableHead>CAF (€)</TableHead>
+                  <TableHead>Solde mensuel (€)</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {Array.from({ length: 12 }).map((_, i) => {
+                  const saison = i < 2 ? 0.05 : i < 5 ? 0.1 : i < 8 ? 0.15 : i < 11 ? 0.1 : 0.05;
+                  const entree = Math.round(caMarket[2] * saison);
+                  const sortie = Math.round((chargesFixes + annuite + impotsEntretien) / 12);
+                  const cafMensuel = Math.round(cafData[2].caf / 12);
+                  const solde = entree - sortie + cafMensuel;
+                  return (
+                    <TableRow key={i}>
+                      <TableCell>Mois {i + 1}</TableCell>
+                      <TableCell>{formatEuro(entree)}</TableCell>
+                      <TableCell>{formatEuro(sortie)}</TableCell>
+                      <TableCell>{formatEuro(cafMensuel)}</TableCell>
+                      <TableCell className={solde < 0 ? 'text-red-600' : 'text-green-700'}>{formatEuro(solde)}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+            <h4 className="font-semibold text-lg text-olive-800 mb-4">💸 Tableau de financement initial</h4>
+            <Table className="mb-8">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Source</TableHead>
+                  <TableHead>Montant (€)</TableHead>
+                  <TableHead>%</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {financementInitial.map((row) => (
+                  <TableRow key={row.name}>
+                    <TableCell>{row.name}</TableCell>
+                    <TableCell>{formatEuro(row.value)}</TableCell>
+                    <TableCell>{((row.value / 1692960) * 100).toFixed(1)}%</TableCell>
+                  </TableRow>
+                ))}
+                <TableRow className="bg-cream-100 font-bold">
+                  <TableCell>Total</TableCell>
+                  <TableCell>{formatEuro(1692960)}</TableCell>
+                  <TableCell>100%</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+            <h4 className="font-semibold text-lg text-olive-800 mb-4">📈 Prévisionnel de résultat sur 3 ans</h4>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Année</TableHead>
+                  <TableHead>Chiffre d'affaires</TableHead>
+                  <TableHead>Charges</TableHead>
+                  <TableHead>Annuités</TableHead>
+                  <TableHead>Résultat net</TableHead>
+                  <TableHead>CAF</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {[
+                  { an: 'Année 1', ca: caMarket[0], ch: chargesFixes, ann: annuite, rn: cafData[0].rn, caf: cafData[0].caf },
+                  { an: 'Année 2', ca: caMarket[1], ch: chargesFixes, ann: annuite, rn: cafData[1].rn, caf: cafData[1].caf },
+                  { an: 'Année 3', ca: caMarket[2], ch: chargesFixes, ann: annuite, rn: cafData[2].rn, caf: cafData[2].caf },
+                ].map((row) => (
+                  <TableRow key={row.an}>
+                    <TableCell>{row.an}</TableCell>
+                    <TableCell>{formatEuro(row.ca)}</TableCell>
+                    <TableCell>{formatEuro(row.ch)}</TableCell>
+                    <TableCell>{formatEuro(row.ann)}</TableCell>
+                    <TableCell>{formatEuro(row.rn)}</TableCell>
+                    <TableCell>{formatEuro(row.caf)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
       </div>
     </section>
   );
